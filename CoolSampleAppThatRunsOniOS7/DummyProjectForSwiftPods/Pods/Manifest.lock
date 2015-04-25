@@ -1,0 +1,13 @@
+PODS:
+  - Alamofire (1.2.1)
+  - FutureKit (0.8.5)
+
+DEPENDENCIES:
+  - AlamoFire
+  - FutureKit
+
+SPEC CHECKSUMS:
+  Alamofire: 1acfdf179aff68b41a48dff70c1ac7fa263e2bcb
+  FutureKit: 1bb66694572842bb29b2724956c8c628c8288069
+
+COCOAPODS: 0.36.4

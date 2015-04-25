@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="N6T-Sh-2Cl">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Future Kit View Controller-->
+        <scene sceneID="wfq-Mf-6eg">
+            <objects>
+                <viewController id="N6T-Sh-2Cl" customClass="FutureKitViewController" customModule="CoolSampleAppThatRunsOniOS7" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="p2P-eA-Vuo"/>
+                        <viewControllerLayoutGuide type="bottom" id="Rhq-7i-fjI"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="HYT-Rn-WJ6">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3XP-RL-kDO">
+                                <rect key="frame" x="16" y="20" width="568" height="580"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="3XP-RL-kDO" firstAttribute="leading" secondItem="HYT-Rn-WJ6" secondAttribute="leadingMargin" id="Gt1-DK-jbV"/>
+                            <constraint firstItem="Rhq-7i-fjI" firstAttribute="top" secondItem="3XP-RL-kDO" secondAttribute="bottom" id="Spw-hE-qdp"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="3XP-RL-kDO" secondAttribute="trailing" id="izV-CH-LzH"/>
+                            <constraint firstItem="3XP-RL-kDO" firstAttribute="top" secondItem="p2P-eA-Vuo" secondAttribute="bottom" id="vRG-c5-ohM"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="textView" destination="3XP-RL-kDO" id="mZp-tq-eIP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8x8-Ej-ChH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="837" y="47"/>
+        </scene>
+    </scenes>
+</document>

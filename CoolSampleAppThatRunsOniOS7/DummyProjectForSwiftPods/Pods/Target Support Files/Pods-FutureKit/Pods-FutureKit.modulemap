@@ -1,0 +1,6 @@
+framework module FutureKit {
+  umbrella header "Pods-FutureKit-umbrella.h"
+
+  export *
+  module * { export * }
+}
