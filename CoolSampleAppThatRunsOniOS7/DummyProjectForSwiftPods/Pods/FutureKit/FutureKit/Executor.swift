@@ -3,7 +3,23 @@
 //  FutureKit
 //
 //  Created by Michael Gray on 4/13/15.
-//  Copyright (c) 2015 Michael Gray. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 #if os(iOS)
@@ -219,25 +235,14 @@ public enum Executor {
             }
             return .Queue(q)
     }
-    public static func createOperationQueue(label: String?,
-        type : SerialOrConcurrent,
-        qos : NSQualityOfService = .Default,
-        relative_priority: Int32 = 0) -> Executor {
+    public static func createOperationQueue(name: String?,
+        maxConcurrentOperationCount : Int) -> Executor {
             
             let oq = NSOperationQueue()
+            oq.name = name
             
-            let qos_class = qos.qos_class
-            let q_attr = type.q_attr
+            return .OperationQueue(oq)
             
-            let c_attr = dispatch_queue_attr_make_with_qos_class(q_attr,qos_class, relative_priority)
-            let q : dispatch_queue_t
-            if let l = label {
-                q = dispatch_queue_create(l, c_attr)
-            }
-            else {
-                q = dispatch_queue_create(nil, c_attr)
-            }
-            return .Queue(q)
     }
     
     public static func createConcurrentQueue(label : String? = nil,qos : NSQualityOfService = .Default) -> Executor  {
@@ -252,10 +257,6 @@ public enum Executor {
     public static func createSerialQueue() -> Executor  {
         return self.createQueue(nil, type: .Serial, qos: .Default, relative_priority: 0)
     }
-
-//    public static func createOperationQueue(label : String? = nil) -> Executor  {
-//        return self.createOperationQueue(nil, q_attr: DISPATCH_QUEUE_SERIAL, qos: .Default, relative_priority: 0)
-//    }
 
     // immediately 'dispatches' and executes a block on an Executor
     // example:
@@ -283,7 +284,9 @@ public enum Executor {
         self.executeAfterDelay(nanosecs,block: b)
     }
 
-    // This converts a generic block (T) -> Void,
+    // This returns the underlyingQueue (if there is one).
+    // Not all executors have an underlyingQueue.
+    // .Custom will always return nil, even if the implementation may include one.
     //
     var underlyingQueue: dispatch_queue_t? {
         get {
@@ -420,7 +423,7 @@ public enum Executor {
 }
 
 let example_of_a_Custom_Executor_That_Is_The_Same_As_MainAsync = Executor.Custom { (taskInfo, executeMe) -> Void in
-    dispatch_main_async {
+    dispatch_async(dispatch_get_main_queue()) {
         executeMe(taskInfo)
     }
 }

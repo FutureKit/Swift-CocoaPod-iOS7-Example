@@ -3,7 +3,23 @@
 //  Bikey
 //
 //  Created by Michael Gray on 4/10/15.
-//  Copyright (c) 2015 Michael Gray. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 import Foundation
@@ -53,6 +69,7 @@ public enum SynchronizationType {
     case NSObjectLock
     case NSLock
     case NSRecursiveLock
+    case OSSpinLock
     
     func lockObject() -> SynchronizationProtocol {
         switch self {
@@ -68,6 +85,8 @@ public enum SynchronizationType {
             return NSLockSynchronization()
         case NSRecursiveLock:
             return NSRecursiveLockSynchronization()
+        case OSSpinLock:
+            return OSSpinLockSynchronization()
         }
     }
 }
@@ -323,6 +342,49 @@ public class NSLockSynchronization : SynchronizationProtocol {
     
     public func modifyAsync<T>(block:() -> T, done : (T) -> Void) {
         let ret = synchronizedWithLock(lock,block)
+        done(ret)
+    }
+}
+
+func synchronizedWithSpinLock<T>(l: UnSafeMutableContainer<OSSpinLock>, @noescape closure:  ()->T) -> T {
+    OSSpinLockLock(l.unsafe_pointer)
+    var retVal: T = closure()
+    OSSpinLockUnlock(l.unsafe_pointer)
+    return retVal
+}
+
+public class OSSpinLockSynchronization : SynchronizationProtocol {
+    
+    var lock = UnSafeMutableContainer<OSSpinLock>(OS_SPINLOCK_INIT)
+
+    required public init() {
+
+    }
+    final func synchronized<T>(block:() -> T) -> T {
+        return synchronizedWithSpinLock(self.lock) { () -> T in
+            return block()
+        }
+    }
+    
+    public func readSync<T>(block:() -> T) -> T {
+        return synchronizedWithSpinLock(lock,block)
+    }
+    
+    public func readAsync<T>(block:() -> T, done : (T) -> Void) {
+        let ret = synchronizedWithSpinLock(lock,block)
+        done(ret)
+    }
+    
+    public func modify(block:() -> Void) {
+        synchronizedWithSpinLock(lock,block)
+    }
+    
+    public func modifySync<T>(block:() -> T) -> T {
+        return synchronizedWithSpinLock(lock,block)
+    }
+    
+    public func modifyAsync<T>(block:() -> T, done : (T) -> Void) {
+        let ret = synchronizedWithSpinLock(lock,block)
         done(ret)
     }
 }
